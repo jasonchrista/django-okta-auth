@@ -1,0 +1,20 @@
+### Python ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+.venv
+*.egg-info
+dist/
+
+### SECRETS ###
+.env
+
+### Editors ###
+.idea
+.vscode
+.prettierrc
+
+### OS ##
+*.DS_Store
+Thumbs.db
