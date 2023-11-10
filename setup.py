@@ -26,7 +26,7 @@ def get_readme():
 
 setup(
     name="django-okta-authentication",
-    version=__import__("auth0_auth").get_version().replace(" ", "-"),
+    version=__import__("okta_auth").get_version().replace(" ", "-"),
     url="https://github.com/jasonchrista/django-okta-auth",
     author="Jason Christa",
     author_email="jason@zeitcode.com",

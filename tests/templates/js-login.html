@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <script src="https://cdn.auth0.com/js/lock/10.4/lock.min.js"></script>
+    {% comment %} <script src="https://cdn.auth0.com/js/lock/10.4/lock.min.js"></script>
     <script type="text/javascript">
         var options = {
             auth: {
@@ -23,7 +23,7 @@
         function signin() {
             lock.show();
         }
-    </script>
+    </script> {% endcomment %}
 </head>
 <body>
     <button onclick="window.signin();">Login</button>

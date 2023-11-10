@@ -29,7 +29,7 @@ INSTALLED_APPS = (
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "auth0_auth",
+    "okta_auth",
 )
 
 MIDDLEWARE = (
@@ -55,7 +55,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "auth0_auth.context_processors.auth0",
             ]
         },
     }
@@ -97,17 +96,17 @@ STATIC_URL = "/static/"
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
-    "auth0_auth.backends.Auth0Backend",
+    "okta_auth.backends.OktaBackend",
 )
 
-LOGIN_URL = "auth0_login"
+LOGIN_URL = "okta:login"
 LOGIN_REDIRECT_URL = "/login_successful/"
-LOGOUT_URL = "auth0_logout"
+LOGOUT_URL = "okta:logout"
 LOGOUT_REDIRECT_URL = "/"
 
-AUTH0_DOMAIN = "YOUR_DOMAIN"
-AUTH0_CLIENT_ID = "YOUR_CLIENT_ID"
-AUTH0_CLIENT_SECRET = "YOUR_CLIENT_SECRET"
+OKTA_DOMAIN = "YOUR_DOMAIN"
+OKTA_CLIENT_ID = "YOUR_CLIENT_ID"
+OKTA_CLIENT_SECRET = "YOUR_CLIENT_SECRET"
 
 SESSION_COOKIE_SAMESITE = None
 
@@ -115,5 +114,5 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
-    "loggers": {"auth0_auth": {"handlers": ["console"], "level": "DEBUG"}},
+    "loggers": {"okta_auth": {"handlers": ["console"], "level": "DEBUG"}},
 }

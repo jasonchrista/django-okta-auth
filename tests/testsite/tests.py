@@ -8,11 +8,11 @@ class LoginTest(TestCase):
         self.client = Client()
 
     def test_login_url(self):
-        url = reverse("auth0_login")
+        url = reverse("okta:login")
         response = self.client.get(url)
         print(response.url)
 
     def test_logout_url(self):
-        url = reverse("auth0_logout")
+        url = reverse("okta:logout")
         response = self.client.get(url)
         print(response.url)
