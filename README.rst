@@ -1,20 +1,20 @@
-Django Auth0 Auth
+Django Okta Auth
 =================
 
-*Django Auth0 Auth* allows you to authenticate through Auth0.
+*Django Okta Auth* allows you to authenticate through Okta.
 
 Installation
 ------------
 
-Run ``pip install django-auth0-auth``
+Run ``pip install django-okta-authentication``
 
-Add the ``Auth0Backend`` to your ``AUTHENTICATION_BACKENDS`` setting:
+Add the ``OktaBackend`` to your ``AUTHENTICATION_BACKENDS`` setting:
 
 .. code:: python
 
    AUTHENTICATION_BACKENDS = (
        ...
-       'auth0_auth.backends.Auth0Backend',
+       'okta_auth.backends.OktaBackend',
    )
 
 Edit your ``urls.py`` to include:
@@ -22,96 +22,42 @@ Edit your ``urls.py`` to include:
 .. code:: python
 
    urlpatterns = [
-       url(r'^auth0/', include('auth0_auth.urls')),
+       url(r'^okta/', include('okta_auth.urls')),
        ...
    ]
 
 Settings
 --------
 
-###AUTH0_DOMAIN
+###OKTA_DOMAIN
 
-Auth0 domain.
+Okta domain.
 
-###AUTH0_CLIENT_ID
+###OKTA_CLIENT_ID
 
-Auth0 client id.
+Okta client id.
 
-###AUTH0_CLIENT_SECRET
+###OKTA_CLIENT_SECRET
 
-Auth0 client secret.
+Okta client secret.
 
-###AUTH0_SECRET_BASE64_ENCODED
-
-**default:** ``False`` Flag if Auth0 client secret is base64 encoded.
-
-###AUTH0_SCOPE
+###OKTA_SCOPE
 
 **default:** ``'openid email'`` OAuth scope parameter.
 
-###AUTH0_RESPONSE_TYPE
+###OKTA_RESPONSE_TYPE
 
-**default:** ``'token'`` OAuth response type parameter.
+**default:** ``'id_token'`` OAuth response type parameter.
 
-###AUTH0_USER_CREATION
+###OKTA_USER_CREATION
 
 **default:** ``True`` Allow creation of new users after successful
 authentication.
 
-Lock Signin
------------
-
-To log in using the JavaScript based **Lock** dialog, add the following
-to your project.
-
-Add the ``auth0`` context processor to the ``TEMPLATES`` options.
-
-.. code:: python
-
-   TEMPLATES = [
-       {
-           'BACKEND': 'django.template.backends.django.DjangoTemplates',
-           'DIRS': [os.path.join(BASE_DIR, 'templates')],
-           'OPTIONS': {
-               'context_processors': [
-                   ...
-                   'auth0_auth.context_processors.auth0',
-               ],
-           },
-       },
-   ]
-
-Add the following JavaScript snippet to your ``base.html`` below your
-sites other JavaScript.
-
-::
-
-   <script src="https://cdn.auth0.com/js/lock-9.min.js"></script>
-   <script type="text/javascript">
-       var lock = new Auth0Lock('{{ AUTH0_CLIENT_ID }}', '{{ AUTH0_DOMAIN }}');
-       function signin() {
-           lock.show({
-               callbackURL: '{{ AUTH0_CALLBACK_URL }}',
-               responseType: 'token',
-               authParams: {
-                   'scope': '{{ AUTH0_SCOPE }}',
-                   'response_mode': 'form_post',
-                   'state': '{{ AUTH0_STATE }}'
-               }
-           });
-       }
-   </script>
-
-Add a login button to your ``base.html``.
-
-::
-
-   <button onclick="window.signin();">Login</button>
-
 Logging
 -------
 
-To enable logging add ``auth0_auth`` to ``LOGGING['loggers']`` options.
+To enable logging add ``okta_auth`` to ``LOGGING['loggers']`` options.
 
 .. code:: python
 
@@ -119,7 +65,7 @@ To enable logging add ``auth0_auth`` to ``LOGGING['loggers']`` options.
        ...,
        'loggers': {
            ...,
-           'auth0_auth': {
+           'okta_auth': {
                'handlers': ['console'],
                'level': 'DEBUG',
            }

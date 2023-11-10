@@ -1,5 +1,3 @@
-from base64 import urlsafe_b64encode
-from hashlib import sha1
 from uuid import uuid4
 
 from django.conf import settings
@@ -19,8 +17,8 @@ except ImportError:
 if getattr(settings, "SESSION_COOKIE_SAMESITE"):
     raise ImproperlyConfigured(
         """Please set the SESSION_COOKIE_SAMESITE to None in your settings.py. To prevent replay 
-        attacks the callback URL verifies a unique state string stored the session is equal value 
-        that is posted back by Okta."""
+        attacks and forgery the callback URL verifies a unique state string and nonce string stored 
+        the session is equal value that is posted back by Okta."""
     )
 
 
@@ -34,8 +32,8 @@ class OktaBackend(object):
     def __init__(self):
         self.User = get_user_model()
 
-    def login_url(self, redirect_uri, state):
-        return get_login_url(redirect_uri=redirect_uri, state=state)
+    def login_url(self, redirect_uri, state, nonce):
+        return get_login_url(redirect_uri=redirect_uri, state=state, nonce=nonce)
 
     def logout_url(self, redirect_uri):
         return get_logout_url(redirect_uri=redirect_uri)
