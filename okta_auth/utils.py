@@ -1,11 +1,8 @@
 import logging
-from base64 import urlsafe_b64decode
 
 import jwt
-import requests
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicNumbers
 from django.conf import settings
+from jwt import PyJWKClient
 
 from .cache import lru_cache_with_expiration
 
@@ -57,49 +54,14 @@ def get_logout_url(redirect_uri, client_id=CLIENT_ID, domain=DOMAIN):
     return "https://{domain}/oauth2/v1/logout?{params}".format(domain=domain, params=params)
 
 
-def _get_jwk_set(domain=DOMAIN):
-    url = "https://{domain}/oauth2/v1/keys".format(domain=domain)
-    response = requests.get(url)
-    if response.status_code != 200:
-        logger.debug("Could not retrieve JSON web key set (JWKS) from {}".format(url))
-        return {}
-    return response.json()
-
-
-def _jwk_to_public_key(json_web_key):
-    def b64_decode(data):
-        data += "=" * (4 - (len(data) % 4))
-        return urlsafe_b64decode(data)
-
-    exponent_bytes = b64_decode(json_web_key["e"])
-    exponent_int = int.from_bytes(exponent_bytes, "big")
-    modulus_bytes = b64_decode(json_web_key["n"])
-    modulus_int = int.from_bytes(modulus_bytes, "big")
-    return RSAPublicNumbers(exponent_int, modulus_int).public_key(default_backend())
-
-
-def _get_public_key(token):
-    token_key_id = jwt.get_unverified_header(token).get("kid")
-    if not token_key_id:
-        logger.debug("Token header does not contain key id (kid).")
-        return None
-    jwk_set = _get_jwk_set()
-    json_web_key = next(
-        (key for key in jwk_set.get("keys", []) if key.get("kid") == token_key_id), None
-    )
-    if not json_web_key:
-        logger.debug("JSON web key (JWK) with kid {} not found".format(token_key_id))
-        return None
-    key = _jwk_to_public_key(json_web_key)
-    return key
-
-
 @lru_cache_with_expiration(seconds=60 * 60 * 24)
-def _get_payload(token, audience=CLIENT_ID):
-    public_key = _get_public_key(token)
+def _get_payload(token, domain=DOMAIN, audience=CLIENT_ID):
+    url = "https://{domain}/oauth2/v1/keys".format(domain=domain)
+    jwks_client = PyJWKClient(url)
+    signing_key = jwks_client.get_signing_key_from_jwt(token)
     try:
         payload = jwt.decode(
-            token, key=public_key, algorithms=["RS256"], audience=audience, leeway=300
+            token, key=signing_key, algorithms=["RS256"], audience=audience, leeway=300
         )
         return payload
     except jwt.InvalidTokenError as e:
@@ -108,7 +70,7 @@ def _get_payload(token, audience=CLIENT_ID):
     return {}
 
 
-def get_email_from_token(token=None, key=CLIENT_SECRET, audience=CLIENT_ID):
+def get_email_from_token(token=None, audience=CLIENT_ID):
     try:
         payload = _get_payload(token=token, audience=audience)
         if "email" in payload:
@@ -125,7 +87,7 @@ def get_email_from_token(token=None, key=CLIENT_SECRET, audience=CLIENT_ID):
     return None
 
 
-def is_email_verified_from_token(token=None, key=CLIENT_SECRET, audience=CLIENT_ID):
+def is_email_verified_from_token(token=None, audience=CLIENT_ID):
     try:
         payload = _get_payload(token=token, audience=audience)
         return payload.get("email_verified", True)
@@ -139,7 +101,7 @@ def is_email_verified_from_token(token=None, key=CLIENT_SECRET, audience=CLIENT_
     return None
 
 
-def get_nonce_from_token(token=None, key=CLIENT_SECRET, audience=CLIENT_ID):
+def get_nonce_from_token(token=None, audience=CLIENT_ID):
     try:
         payload = _get_payload(token=token, audience=audience)
         return payload.get("nonce")
