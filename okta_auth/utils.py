@@ -1,6 +1,7 @@
 import logging
 
 import jwt
+from cryptography.hazmat.primitives import serialization
 from django.conf import settings
 from jwt import PyJWKClient
 
@@ -59,9 +60,12 @@ def _get_payload(token, domain=DOMAIN, audience=CLIENT_ID):
     url = "https://{domain}/oauth2/v1/keys".format(domain=domain)
     jwks_client = PyJWKClient(url)
     signing_key = jwks_client.get_signing_key_from_jwt(token)
+    pem_key = signing_key.key.public_bytes(
+        encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
     try:
         payload = jwt.decode(
-            token, key=signing_key, algorithms=["RS256"], audience=audience, leeway=300
+            token, key=pem_key, algorithms=["RS256"], audience=audience, leeway=300
         )
         return payload
     except jwt.InvalidTokenError as e:
