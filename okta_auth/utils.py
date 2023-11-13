@@ -50,8 +50,8 @@ def get_login_url(
     return "https://{domain}/oauth2/v1/authorize?{params}".format(domain=domain, params=params)
 
 
-def get_logout_url(redirect_uri, client_id=CLIENT_ID, domain=DOMAIN):
-    params = urlencode({"post_logout_redirect_uri": redirect_uri, "id_token_hint": client_id})
+def get_logout_url(id_token, redirect_uri, domain=DOMAIN):
+    params = urlencode({"post_logout_redirect_uri": redirect_uri, "id_token_hint": id_token})
     return "https://{domain}/oauth2/v1/logout?{params}".format(domain=domain, params=params)
 
 

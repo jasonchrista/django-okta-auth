@@ -51,9 +51,11 @@ def auth(request):
 @never_cache
 def logout(request):
     backend = OktaBackend()
+    id_token = request.session.get("id_token")
     logout_redirect_url = getattr(settings, "LOGOUT_REDIRECT_URL", "/")
     redirect_uri = request.build_absolute_uri(resolve_url(logout_redirect_url))
     logout_url = backend.logout_url(
+        id_token=id_token,
         redirect_uri=redirect_uri,
     )
     auth_logout(request)
@@ -73,6 +75,7 @@ def callback(request):
         return login_response
 
     token = request.POST.get("id_token")
+    request.session["id_token"] = token
     logger.debug("Token {} received".format(token))
 
     original_nonce = request.session.get("nonce")

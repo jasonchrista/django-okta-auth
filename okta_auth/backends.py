@@ -35,8 +35,8 @@ class OktaBackend(object):
     def login_url(self, redirect_uri, state, nonce):
         return get_login_url(redirect_uri=redirect_uri, state=state, nonce=nonce)
 
-    def logout_url(self, redirect_uri):
-        return get_logout_url(redirect_uri=redirect_uri)
+    def logout_url(self, id_token, redirect_uri):
+        return get_logout_url(id_token=id_token, redirect_uri=redirect_uri)
 
     def authenticate(self, token=None, **kwargs):
         if token is None:
