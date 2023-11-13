@@ -29,27 +29,33 @@ Edit your ``urls.py`` to include:
 Settings
 --------
 
-###OKTA_DOMAIN
+OKTA_DOMAIN
+~~~~~~~~~~~
 
 Okta domain.
 
-###OKTA_CLIENT_ID
+OKTA_CLIENT_ID
+~~~~~~~~~~~~~~
 
 Okta client id.
 
-###OKTA_CLIENT_SECRET
+OKTA_CLIENT_SECRET
+~~~~~~~~~~~~~~~~~~
 
 Okta client secret.
 
-###OKTA_SCOPE
+OKTA_SCOPE
+~~~~~~~~~~
 
 **default:** ``'openid email'`` OAuth scope parameter.
 
-###OKTA_RESPONSE_TYPE
+OKTA_RESPONSE_TYPE
+~~~~~~~~~~~~~~~~~~~
 
 **default:** ``'id_token'`` OAuth response type parameter.
 
-###OKTA_USER_CREATION
+OKTA_USER_CREATION
+~~~~~~~~~~~~~~~~~~
 
 **default:** ``True`` Allow creation of new users after successful
 authentication.
