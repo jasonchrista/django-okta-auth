@@ -5,6 +5,8 @@ Django settings for testsite project.
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+from getenv import env
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -104,10 +106,12 @@ LOGIN_REDIRECT_URL = "/login_successful/"
 LOGOUT_URL = "okta:logout"
 LOGOUT_REDIRECT_URL = "/"
 
-OKTA_DOMAIN = "YOUR_DOMAIN"
-OKTA_CLIENT_ID = "YOUR_CLIENT_ID"
-OKTA_CLIENT_SECRET = "YOUR_CLIENT_SECRET"
+OKTA_DOMAIN = env("OKTA_DOMAIN")
+OKTA_CLIENT_ID = env("OKTA_CLIENT_ID")
+OKTA_CLIENT_SECRET = env("OKTA_CLIENT_SECRET")
+OKTA_USER_CREATION = env("OKTA_USER_CREATION", False)
 
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_SAMESITE = None
 
 LOGGING = {

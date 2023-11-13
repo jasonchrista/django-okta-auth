@@ -5,7 +5,9 @@
 __pycache__/
 .venv
 *.egg-info
+.tox
 dist/
+build/
 
 ### SECRETS ###
 .env
@@ -14,6 +16,9 @@ dist/
 .idea
 .vscode
 .prettierrc
+
+## DB ##
+*.sqlite3
 
 ### OS ##
 *.DS_Store

@@ -1,9 +1,9 @@
-from django.urls import include, re_path
+from django.urls import include, path
 
-from .views import js_login, login_successful
+from .views import login_successful
 
 urlpatterns = [
-    re_path(r"^okta/", include("okta_auth.urls")),
-    re_path(r"^js_login/$", js_login, name="js_login"),
-    re_path(r"^login_successful/$", login_successful, name="login_successful"),
+    path("", login_successful, name="home"),
+    path("okta/", include("okta_auth.urls")),
+    path("login_successful/", login_successful, name="login_successful"),
 ]

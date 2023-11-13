@@ -1,1 +1,9 @@
-Hi {{ user.email }}!
+<h1>Hi {{ user.email }}!</h1>
+
+<h2>Token</h2>
+<code>{{ request.session.id_token }}</code>
+
+<h2>Payload</h2>
+<pre>
+    <code>{{ payload }}</code>
+</pre>
